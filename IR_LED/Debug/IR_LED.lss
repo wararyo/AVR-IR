@@ -1,0 +1,473 @@
+
+IR_LED.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  0000023e  000002d2  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000023e  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          0000009c  00800100  00800100  000002d2  2**0
+                  ALLOC
+  3 .stab         000006cc  00000000  00000000  000002d4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000097  00000000  00000000  000009a0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .comment      0000002f  00000000  00000000  00000a37  2**0
+                  CONTENTS, READONLY
+  6 .debug_aranges 00000058  00000000  00000000  00000a66  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   000003ce  00000000  00000000  00000abe  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 00000251  00000000  00000000  00000e8c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   000002d6  00000000  00000000  000010dd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  000000b8  00000000  00000000  000013b4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    00000137  00000000  00000000  0000146c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000333  00000000  00000000  000015a3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 00000050  00000000  00000000  000018d6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	19 c0       	rjmp	.+50     	; 0x34 <__ctors_end>
+   2:	28 c0       	rjmp	.+80     	; 0x54 <__bad_interrupt>
+   4:	27 c0       	rjmp	.+78     	; 0x54 <__bad_interrupt>
+   6:	26 c0       	rjmp	.+76     	; 0x54 <__bad_interrupt>
+   8:	25 c0       	rjmp	.+74     	; 0x54 <__bad_interrupt>
+   a:	24 c0       	rjmp	.+72     	; 0x54 <__bad_interrupt>
+   c:	23 c0       	rjmp	.+70     	; 0x54 <__bad_interrupt>
+   e:	22 c0       	rjmp	.+68     	; 0x54 <__bad_interrupt>
+  10:	21 c0       	rjmp	.+66     	; 0x54 <__bad_interrupt>
+  12:	20 c0       	rjmp	.+64     	; 0x54 <__bad_interrupt>
+  14:	1f c0       	rjmp	.+62     	; 0x54 <__bad_interrupt>
+  16:	1e c0       	rjmp	.+60     	; 0x54 <__bad_interrupt>
+  18:	1d c0       	rjmp	.+58     	; 0x54 <__bad_interrupt>
+  1a:	1c c0       	rjmp	.+56     	; 0x54 <__bad_interrupt>
+  1c:	1c c0       	rjmp	.+56     	; 0x56 <__vector_14>
+  1e:	1a c0       	rjmp	.+52     	; 0x54 <__bad_interrupt>
+  20:	19 c0       	rjmp	.+50     	; 0x54 <__bad_interrupt>
+  22:	18 c0       	rjmp	.+48     	; 0x54 <__bad_interrupt>
+  24:	17 c0       	rjmp	.+46     	; 0x54 <__bad_interrupt>
+  26:	16 c0       	rjmp	.+44     	; 0x54 <__bad_interrupt>
+  28:	15 c0       	rjmp	.+42     	; 0x54 <__bad_interrupt>
+  2a:	14 c0       	rjmp	.+40     	; 0x54 <__bad_interrupt>
+  2c:	13 c0       	rjmp	.+38     	; 0x54 <__bad_interrupt>
+  2e:	12 c0       	rjmp	.+36     	; 0x54 <__bad_interrupt>
+  30:	11 c0       	rjmp	.+34     	; 0x54 <__bad_interrupt>
+  32:	10 c0       	rjmp	.+32     	; 0x54 <__bad_interrupt>
+
+00000034 <__ctors_end>:
+  34:	11 24       	eor	r1, r1
+  36:	1f be       	out	0x3f, r1	; 63
+  38:	cf ef       	ldi	r28, 0xFF	; 255
+  3a:	d4 e0       	ldi	r29, 0x04	; 4
+  3c:	de bf       	out	0x3e, r29	; 62
+  3e:	cd bf       	out	0x3d, r28	; 61
+
+00000040 <__do_clear_bss>:
+  40:	21 e0       	ldi	r18, 0x01	; 1
+  42:	a0 e0       	ldi	r26, 0x00	; 0
+  44:	b1 e0       	ldi	r27, 0x01	; 1
+  46:	01 c0       	rjmp	.+2      	; 0x4a <.do_clear_bss_start>
+
+00000048 <.do_clear_bss_loop>:
+  48:	1d 92       	st	X+, r1
+
+0000004a <.do_clear_bss_start>:
+  4a:	ac 39       	cpi	r26, 0x9C	; 156
+  4c:	b2 07       	cpc	r27, r18
+  4e:	e1 f7       	brne	.-8      	; 0x48 <.do_clear_bss_loop>
+  50:	e0 d0       	rcall	.+448    	; 0x212 <main>
+  52:	f3 c0       	rjmp	.+486    	; 0x23a <_exit>
+
+00000054 <__bad_interrupt>:
+  54:	d5 cf       	rjmp	.-86     	; 0x0 <__vectors>
+
+00000056 <__vector_14>:
+char IR_format = IR_FORMAT_NEC;*/
+
+int IR_count = 0;
+char IR_data[154];//16+8+(4*32)+1
+
+ISR ( TIMER0_COMPA_vect ){
+  56:	1f 92       	push	r1
+  58:	0f 92       	push	r0
+  5a:	0f b6       	in	r0, 0x3f	; 63
+  5c:	0f 92       	push	r0
+  5e:	11 24       	eor	r1, r1
+  60:	8f 93       	push	r24
+  62:	9f 93       	push	r25
+  64:	ef 93       	push	r30
+  66:	ff 93       	push	r31
+	sbi(PORTD,PD6);
+  68:	5e 9a       	sbi	0x0b, 6	; 11
+	if(IR_data[IR_count]){
+  6a:	e0 91 00 01 	lds	r30, 0x0100
+  6e:	f0 91 01 01 	lds	r31, 0x0101
+  72:	ee 5f       	subi	r30, 0xFE	; 254
+  74:	fe 4f       	sbci	r31, 0xFE	; 254
+  76:	80 81       	ld	r24, Z
+  78:	88 23       	and	r24, r24
+  7a:	31 f0       	breq	.+12     	; 0x88 <__vector_14+0x32>
+		sbi(PWM_CONTROL_B,0);
+  7c:	e1 e8       	ldi	r30, 0x81	; 129
+  7e:	f0 e0       	ldi	r31, 0x00	; 0
+  80:	80 81       	ld	r24, Z
+  82:	81 60       	ori	r24, 0x01	; 1
+  84:	80 83       	st	Z, r24
+  86:	05 c0       	rjmp	.+10     	; 0x92 <__vector_14+0x3c>
+	}
+	else{
+		cbi(PWM_CONTROL_B,0);
+  88:	e1 e8       	ldi	r30, 0x81	; 129
+  8a:	f0 e0       	ldi	r31, 0x00	; 0
+  8c:	80 81       	ld	r24, Z
+  8e:	8e 7f       	andi	r24, 0xFE	; 254
+  90:	80 83       	st	Z, r24
+	}
+	IR_count++;
+  92:	80 91 00 01 	lds	r24, 0x0100
+  96:	90 91 01 01 	lds	r25, 0x0101
+  9a:	01 96       	adiw	r24, 0x01	; 1
+  9c:	90 93 01 01 	sts	0x0101, r25
+  a0:	80 93 00 01 	sts	0x0100, r24
+	if(IR_count >= 154) {
+  a4:	8a 39       	cpi	r24, 0x9A	; 154
+  a6:	91 05       	cpc	r25, r1
+  a8:	54 f0       	brlt	.+20     	; 0xbe <__vector_14+0x68>
+		cbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
+  aa:	ee e6       	ldi	r30, 0x6E	; 110
+  ac:	f0 e0       	ldi	r31, 0x00	; 0
+  ae:	80 81       	ld	r24, Z
+  b0:	8d 7f       	andi	r24, 0xFD	; 253
+  b2:	80 83       	st	Z, r24
+		IR_count = 0;
+  b4:	10 92 01 01 	sts	0x0101, r1
+  b8:	10 92 00 01 	sts	0x0100, r1
+		cbi(PORTD,PD6);
+  bc:	5e 98       	cbi	0x0b, 6	; 11
+	}
+}
+  be:	ff 91       	pop	r31
+  c0:	ef 91       	pop	r30
+  c2:	9f 91       	pop	r25
+  c4:	8f 91       	pop	r24
+  c6:	0f 90       	pop	r0
+  c8:	0f be       	out	0x3f, r0	; 63
+  ca:	0f 90       	pop	r0
+  cc:	1f 90       	pop	r1
+  ce:	18 95       	reti
+
+000000d0 <IR_initialize>:
+
+void IR_initialize(){
+	TIMER_CONTROL_A = 0b00000010;//OC0A切断 CTC
+  d0:	82 e0       	ldi	r24, 0x02	; 2
+  d2:	84 bd       	out	0x24, r24	; 36
+	TIMER_CONTROL_B = 0b00000010;//1/8 8μs/1カウント
+  d4:	85 bd       	out	0x25, r24	; 37
+	TIMER_COMP = IR_T;
+  d6:	86 e4       	ldi	r24, 0x46	; 70
+  d8:	87 bd       	out	0x27, r24	; 39
+	
+	sbi(IR_LED_DDR,IR_LED_PIN);//output
+  da:	21 9a       	sbi	0x04, 1	; 4
+	cbi(IR_LED_PORT,IR_LED_PIN);
+  dc:	29 98       	cbi	0x05, 1	; 5
+	
+	PWM_CONTROL_A = 0b10000010;
+  de:	82 e8       	ldi	r24, 0x82	; 130
+  e0:	80 93 80 00 	sts	0x0080, r24
+	PWM_CONTROL_B = 0b00011001;
+  e4:	89 e1       	ldi	r24, 0x19	; 25
+  e6:	80 93 81 00 	sts	0x0081, r24
+	PWM_TOP = IR_CAREER;
+  ea:	8a e1       	ldi	r24, 0x1A	; 26
+  ec:	90 e0       	ldi	r25, 0x00	; 0
+  ee:	90 93 87 00 	sts	0x0087, r25
+  f2:	80 93 86 00 	sts	0x0086, r24
+	PWM_COMP = IR_DUTY;
+  f6:	89 e0       	ldi	r24, 0x09	; 9
+  f8:	80 93 88 00 	sts	0x0088, r24
+	
+	sei();
+  fc:	78 94       	sei
+  fe:	08 95       	ret
+
+00000100 <add_data>:
+}
+
+int add_data(char mvalue,int count){
+	if(mvalue){
+ 100:	88 23       	and	r24, r24
+ 102:	59 f0       	breq	.+22     	; 0x11a <add_data+0x1a>
+		IR_data[count] = 1;count++;
+ 104:	fb 01       	movw	r30, r22
+ 106:	ee 5f       	subi	r30, 0xFE	; 254
+ 108:	fe 4f       	sbci	r31, 0xFE	; 254
+ 10a:	81 e0       	ldi	r24, 0x01	; 1
+ 10c:	80 83       	st	Z, r24
+		for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+ 10e:	11 82       	std	Z+1, r1	; 0x01
+ 110:	12 82       	std	Z+2, r1	; 0x02
+ 112:	13 82       	std	Z+3, r1	; 0x03
+ 114:	6c 5f       	subi	r22, 0xFC	; 252
+ 116:	7f 4f       	sbci	r23, 0xFF	; 255
+ 118:	08 c0       	rjmp	.+16     	; 0x12a <add_data+0x2a>
+	}
+	else{
+		IR_data[count] = 1;count++;
+ 11a:	fb 01       	movw	r30, r22
+ 11c:	ee 5f       	subi	r30, 0xFE	; 254
+ 11e:	fe 4f       	sbci	r31, 0xFE	; 254
+ 120:	81 e0       	ldi	r24, 0x01	; 1
+ 122:	80 83       	st	Z, r24
+		IR_data[count] = 0;count++;
+ 124:	11 82       	std	Z+1, r1	; 0x01
+ 126:	6e 5f       	subi	r22, 0xFE	; 254
+ 128:	7f 4f       	sbci	r23, 0xFF	; 255
+	}
+	return count;
+}
+ 12a:	86 2f       	mov	r24, r22
+ 12c:	97 2f       	mov	r25, r23
+ 12e:	08 95       	ret
+
+00000130 <IR_send>:
+
+
+void IR_send(int customer,char data){
+ 130:	ef 92       	push	r14
+ 132:	ff 92       	push	r15
+ 134:	0f 93       	push	r16
+ 136:	1f 93       	push	r17
+ 138:	cf 93       	push	r28
+ 13a:	df 93       	push	r29
+ 13c:	8c 01       	movw	r16, r24
+ 13e:	f6 2e       	mov	r15, r22
+ 140:	e2 e0       	ldi	r30, 0x02	; 2
+ 142:	f1 e0       	ldi	r31, 0x01	; 1
+ 144:	82 e1       	ldi	r24, 0x12	; 18
+ 146:	91 e0       	ldi	r25, 0x01	; 1
+
+	int count = 0;
+	for(char i=0;i < 16;i++){
+		IR_data[count] = 1;
+ 148:	21 e0       	ldi	r18, 0x01	; 1
+ 14a:	21 93       	st	Z+, r18
+
+
+void IR_send(int customer,char data){
+
+	int count = 0;
+	for(char i=0;i < 16;i++){
+ 14c:	e8 17       	cp	r30, r24
+ 14e:	f9 07       	cpc	r31, r25
+ 150:	e1 f7       	brne	.-8      	; 0x14a <IR_send+0x1a>
+		IR_data[count] = 1;
+		count++;
+	}
+	for(char i=0;i < 8;i++){
+		IR_data[count] = 0;
+ 152:	10 92 12 01 	sts	0x0112, r1
+ 156:	10 92 13 01 	sts	0x0113, r1
+ 15a:	10 92 14 01 	sts	0x0114, r1
+ 15e:	10 92 15 01 	sts	0x0115, r1
+ 162:	10 92 16 01 	sts	0x0116, r1
+ 166:	10 92 17 01 	sts	0x0117, r1
+ 16a:	10 92 18 01 	sts	0x0118, r1
+ 16e:	10 92 19 01 	sts	0x0119, r1
+ 172:	cf e0       	ldi	r28, 0x0F	; 15
+ 174:	d0 e0       	ldi	r29, 0x00	; 0
+		count++;
+ 176:	68 e1       	ldi	r22, 0x18	; 24
+ 178:	70 e0       	ldi	r23, 0x00	; 0
+	}
+	
+	for(char i=0;i < 16;i++){
+		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+ 17a:	c8 01       	movw	r24, r16
+ 17c:	0c 2e       	mov	r0, r28
+ 17e:	02 c0       	rjmp	.+4      	; 0x184 <IR_send+0x54>
+ 180:	95 95       	asr	r25
+ 182:	87 95       	ror	r24
+ 184:	0a 94       	dec	r0
+ 186:	e2 f7       	brpl	.-8      	; 0x180 <IR_send+0x50>
+ 188:	81 70       	andi	r24, 0x01	; 1
+ 18a:	ba df       	rcall	.-140    	; 0x100 <add_data>
+ 18c:	bc 01       	movw	r22, r24
+ 18e:	21 97       	sbiw	r28, 0x01	; 1
+ 190:	a0 f7       	brcc	.-24     	; 0x17a <IR_send+0x4a>
+	for(char i=0;i < 8;i++){
+		IR_data[count] = 0;
+		count++;
+	}
+	
+	for(char i=0;i < 16;i++){
+ 192:	c7 e0       	ldi	r28, 0x07	; 7
+ 194:	d0 e0       	ldi	r29, 0x00	; 0
+		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+	}
+	for(char i=0;i < 8;i++){
+		count = add_data(((data >> (7 - i)) & 0x01),count);
+ 196:	0f 2d       	mov	r16, r15
+ 198:	10 e0       	ldi	r17, 0x00	; 0
+ 19a:	78 01       	movw	r14, r16
+ 19c:	c8 01       	movw	r24, r16
+ 19e:	0c 2e       	mov	r0, r28
+ 1a0:	02 c0       	rjmp	.+4      	; 0x1a6 <IR_send+0x76>
+ 1a2:	95 95       	asr	r25
+ 1a4:	87 95       	ror	r24
+ 1a6:	0a 94       	dec	r0
+ 1a8:	e2 f7       	brpl	.-8      	; 0x1a2 <IR_send+0x72>
+ 1aa:	81 70       	andi	r24, 0x01	; 1
+ 1ac:	a9 df       	rcall	.-174    	; 0x100 <add_data>
+ 1ae:	bc 01       	movw	r22, r24
+ 1b0:	21 97       	sbiw	r28, 0x01	; 1
+ 1b2:	98 f7       	brcc	.-26     	; 0x19a <IR_send+0x6a>
+	}
+	
+	for(char i=0;i < 16;i++){
+		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+	}
+	for(char i=0;i < 8;i++){
+ 1b4:	c7 e0       	ldi	r28, 0x07	; 7
+ 1b6:	d0 e0       	ldi	r29, 0x00	; 0
+			IR_data[count] = 1;count++;
+			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+		}*/
+	}
+	for(char i=0;i < 8;i++){
+		count = add_data(((~data >> (7 - i)) & 0x01),count);
+ 1b8:	e0 94       	com	r14
+ 1ba:	f0 94       	com	r15
+ 1bc:	c7 01       	movw	r24, r14
+ 1be:	0c 2e       	mov	r0, r28
+ 1c0:	02 c0       	rjmp	.+4      	; 0x1c6 <IR_send+0x96>
+ 1c2:	95 95       	asr	r25
+ 1c4:	87 95       	ror	r24
+ 1c6:	0a 94       	dec	r0
+ 1c8:	e2 f7       	brpl	.-8      	; 0x1c2 <IR_send+0x92>
+ 1ca:	81 70       	andi	r24, 0x01	; 1
+ 1cc:	99 df       	rcall	.-206    	; 0x100 <add_data>
+ 1ce:	bc 01       	movw	r22, r24
+ 1d0:	21 97       	sbiw	r28, 0x01	; 1
+ 1d2:	a0 f7       	brcc	.-24     	; 0x1bc <IR_send+0x8c>
+		else{
+			IR_data[count] = 1;count++;
+			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+		}*/
+	}
+	IR_data[count] = 1;
+ 1d4:	fb 01       	movw	r30, r22
+ 1d6:	ee 5f       	subi	r30, 0xFE	; 254
+ 1d8:	fe 4f       	sbci	r31, 0xFE	; 254
+ 1da:	81 e0       	ldi	r24, 0x01	; 1
+ 1dc:	80 83       	st	Z, r24
+	count++;
+ 1de:	6f 5f       	subi	r22, 0xFF	; 255
+ 1e0:	7f 4f       	sbci	r23, 0xFF	; 255
+	
+	while(count < 154){
+ 1e2:	6a 39       	cpi	r22, 0x9A	; 154
+ 1e4:	71 05       	cpc	r23, r1
+ 1e6:	4c f4       	brge	.+18     	; 0x1fa <IR_send+0xca>
+	}
+	return count;
+}
+
+
+void IR_send(int customer,char data){
+ 1e8:	fb 01       	movw	r30, r22
+ 1ea:	ee 5f       	subi	r30, 0xFE	; 254
+ 1ec:	fe 4f       	sbci	r31, 0xFE	; 254
+ 1ee:	8c e9       	ldi	r24, 0x9C	; 156
+ 1f0:	91 e0       	ldi	r25, 0x01	; 1
+	}
+	IR_data[count] = 1;
+	count++;
+	
+	while(count < 154){
+		IR_data[count] = 0;
+ 1f2:	11 92       	st	Z+, r1
+		}*/
+	}
+	IR_data[count] = 1;
+	count++;
+	
+	while(count < 154){
+ 1f4:	e8 17       	cp	r30, r24
+ 1f6:	f9 07       	cpc	r31, r25
+ 1f8:	e1 f7       	brne	.-8      	; 0x1f2 <IR_send+0xc2>
+		count++;
+	}
+	
+				
+	//sbi(PORTD,PD6);
+	sbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
+ 1fa:	ee e6       	ldi	r30, 0x6E	; 110
+ 1fc:	f0 e0       	ldi	r31, 0x00	; 0
+ 1fe:	80 81       	ld	r24, Z
+ 200:	82 60       	ori	r24, 0x02	; 2
+ 202:	80 83       	st	Z, r24
+ 204:	df 91       	pop	r29
+ 206:	cf 91       	pop	r28
+ 208:	1f 91       	pop	r17
+ 20a:	0f 91       	pop	r16
+ 20c:	ff 90       	pop	r15
+ 20e:	ef 90       	pop	r14
+ 210:	08 95       	ret
+
+00000212 <main>:
+#define tbi(addr,bit)	  addr ^=  (1<<bit)
+#define wait(ms) _delay_ms(ms)
+
+int main(void)
+{
+	DDRD = 0b11111111;
+ 212:	8f ef       	ldi	r24, 0xFF	; 255
+ 214:	8a b9       	out	0x0a, r24	; 10
+	PORTD = 0b00000000;
+ 216:	1b b8       	out	0x0b, r1	; 11
+	DDRB = 0b11111111;
+ 218:	84 b9       	out	0x04, r24	; 4
+	PORTB = 0b00000000;
+ 21a:	15 b8       	out	0x05, r1	; 5
+	IR_initialize();
+ 21c:	59 df       	rcall	.-334    	; 0xd0 <IR_initialize>
+    while(1)
+    {
+		//sbi(PWM_CONTROL_B,0);
+		IR_send(0b0010000111000111,0b10010100);
+ 21e:	64 e9       	ldi	r22, 0x94	; 148
+ 220:	87 ec       	ldi	r24, 0xC7	; 199
+ 222:	91 e2       	ldi	r25, 0x21	; 33
+ 224:	85 df       	rcall	.-246    	; 0x130 <IR_send>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 226:	2f e3       	ldi	r18, 0x3F	; 63
+ 228:	82 e4       	ldi	r24, 0x42	; 66
+ 22a:	9f e0       	ldi	r25, 0x0F	; 15
+ 22c:	21 50       	subi	r18, 0x01	; 1
+ 22e:	80 40       	sbci	r24, 0x00	; 0
+ 230:	90 40       	sbci	r25, 0x00	; 0
+ 232:	e1 f7       	brne	.-8      	; 0x22c <main+0x1a>
+ 234:	00 c0       	rjmp	.+0      	; 0x236 <main+0x24>
+ 236:	00 00       	nop
+ 238:	f2 cf       	rjmp	.-28     	; 0x21e <main+0xc>
+
+0000023a <_exit>:
+ 23a:	f8 94       	cli
+
+0000023c <__stop_program>:
+ 23c:	ff cf       	rjmp	.-2      	; 0x23c <__stop_program>
