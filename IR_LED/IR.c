@@ -25,18 +25,16 @@ int IR_count = 0;
 char IR_data[154];//16+8+(4*32)+1
 
 ISR ( TIMER0_COMPA_vect ){
-	sbi(PORTD,PD6);
 	if(IR_data[IR_count]){
-		sbi(PWM_CONTROL_B,0);
+		sbi(PWM_CONTROL_A,7);
 	}
 	else{
-		cbi(PWM_CONTROL_B,0);
+		cbi(PWM_CONTROL_A,7);
 	}
 	IR_count++;
 	if(IR_count >= 154) {
 		cbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
 		IR_count = 0;
-		cbi(PORTD,PD6);
 	}
 }
 
