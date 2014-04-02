@@ -37,7 +37,7 @@
 #define IR_DUTY 9 // 26/3 9μs
 
 volatile int IR_count = 0;
-volatile char IR_data[154];//16+8+(4*32)+1
+volatile char IR_data[96];//16+8+(4*32)+1
 
 ISR ( TIMER0_COMPA_vect ){
 	if(IR_data[IR_count] & 0b00000001){
@@ -46,7 +46,7 @@ ISR ( TIMER0_COMPA_vect ){
 	else{
 		cbi(PWM_CONTROL_A,7);
 	}
-	//TIMER_COMP = IR_T;// * (IR_data[IR_count] >> 1);
+	TIMER_COMP = IR_T * (IR_data[IR_count] >> 1);
 	//sbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
 	IR_count++;
 	if(IR_data[IR_count] == 0) {
@@ -79,36 +79,44 @@ void IR_initialize(){
 //残り7ビットでその状態の長さを表す
 //ex) 0b00000100 LOWの状態を2カウント続ける　0b00000011 HIGHの状態を1カウント続ける
 
-int add_data_raw(char mvalue,int count,char length){
+int add_data_raw(char mvalue,int *count,char length){
+	char lengthnumber; char rest;//8ビットカウンタ　1MHz 1/8分周より　2048μsまでしか測れない
+	if(length > 3){ lengthnumber = length / 3; rest = length % 3 ;}
+	else if(length == 0) return *count;
+	else {lengthnumber = 0; rest = length;}
+		
 	mvalue &= 0b00000001;//2以上の場合は1に
-	if(!length){cbi(PORTD,PD7); return count;}else sbi(PORTD,PD7);
-	IR_data[0] = 5;//(length << 1) | mvalue;
-	return count++;
+	for (char i=0;i < lengthnumber;i++){
+		IR_data[*count] = (3 << 1) | mvalue;
+		(*count)++;
+	}
+	IR_data[(*count)++] = (rest << 1) | mvalue;
+	return *count;
 }
 
-int add_data(char mvalue,int count){
+int add_data(char mvalue,int *count){
 	if(mvalue){
-		count = add_data_raw(1,count,1);
-		count = add_data_raw(0,count,3);
+		add_data_raw(1,count,1);
+		add_data_raw(0,count,3);
 	}
 	else{
-		count = add_data_raw(1,count,1);
-		count = add_data_raw(0,count,1);
+		add_data_raw(1,count,1);
+		add_data_raw(0,count,1);
 	}
-	return count;
+	return *count;
 }
 
 void IR_send(int customer,char data){
 
 	int count = 0;
-	count = add_data_raw(1,count,16);
-	count = add_data_raw(0,count,8);
+	add_data_raw(1,&count,16);
+	add_data_raw(0,&count,8);
 	
 	for(char i=0;i < 16;i++){
-		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+		add_data(((customer >> (15 - i)) & 0x0001),&count);//カスタマーコード　上位ビットからiビット目が1の時
 	}
 	for(char i=0;i < 8;i++){
-		count = add_data(((data >> (7 - i)) & 0x01),count);
+		add_data(((data >> (7 - i)) & 0x01),&count);
 		/*if((data >> (7 - i)) & 0x01){
 			IR_data[count] = 1;count++;
 			IR_data[count] = 0;count++;
@@ -119,7 +127,7 @@ void IR_send(int customer,char data){
 		}*/
 	}
 	for(char i=0;i < 8;i++){
-		count = add_data(((~data >> (7 - i)) & 0x01),count);
+		add_data(((~data >> (7 - i)) & 0x01),&count);
 		/*if((~data >> (7 - i)) & 0x01){
 			IR_data[count] = 1;count++;
 			IR_data[count] = 0;count++;
@@ -129,10 +137,14 @@ void IR_send(int customer,char data){
 			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
 		}*/
 	}
-	count = add_data_raw(1,count,1);
+	//add_data(1,&count);
+	add_data_raw(1,&count,1);
+	add_data_raw(0,&count,1);
 	
-	while(count < 154){
-		IR_data[count++] = 0;
+	//if(IR_data[0] == 0) sbi(PORTD,PD7);else cbi(PORTD,PD7);
+	
+	while(count < 96){
+		IR_data[(count)++] = 0;
 	}
 	
 

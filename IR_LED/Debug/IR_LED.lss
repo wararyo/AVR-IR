@@ -3,33 +3,33 @@ IR_LED.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  0000022e  000002c2  2**0
+  0 .data         00000000  00800100  000002f6  0000038a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000022e  00000000  00000000  00000094  2**1
+  1 .text         000002f6  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000009c  00800100  00800100  000002c2  2**0
+  2 .bss          0000009c  00800100  00800100  0000038a  2**0
                   ALLOC
-  3 .stab         000006cc  00000000  00000000  000002c4  2**2
+  3 .stab         000006cc  00000000  00000000  0000038c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00000097  00000000  00000000  00000990  2**0
+  4 .stabstr      00000097  00000000  00000000  00000a58  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .comment      0000002f  00000000  00000000  00000a27  2**0
+  5 .comment      0000002f  00000000  00000000  00000aef  2**0
                   CONTENTS, READONLY
-  6 .debug_aranges 00000048  00000000  00000000  00000a56  2**0
+  6 .debug_aranges 00000048  00000000  00000000  00000b1e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000003b8  00000000  00000000  00000a9e  2**0
+  7 .debug_info   00000464  00000000  00000000  00000b66  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 000001c9  00000000  00000000  00000e56  2**0
+  8 .debug_abbrev 000001f5  00000000  00000000  00000fca  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   0000022c  00000000  00000000  0000101f  2**0
+  9 .debug_line   00000247  00000000  00000000  000011bf  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  000000b4  00000000  00000000  0000124c  2**2
+ 10 .debug_frame  000000d0  00000000  00000000  00001408  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00000141  00000000  00000000  00001300  2**0
+ 11 .debug_str    00000153  00000000  00000000  000014d8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    000002e7  00000000  00000000  00001441  2**0
+ 12 .debug_loc    0000035e  00000000  00000000  0000162b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000038  00000000  00000000  00001728  2**0
+ 13 .debug_ranges 00000050  00000000  00000000  00001989  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -83,8 +83,8 @@ Disassembly of section .text:
   4a:	ac 39       	cpi	r26, 0x9C	; 156
   4c:	b2 07       	cpc	r27, r18
   4e:	e1 f7       	brne	.-8      	; 0x48 <.do_clear_bss_loop>
-  50:	d7 d0       	rcall	.+430    	; 0x200 <main>
-  52:	eb c0       	rjmp	.+470    	; 0x22a <_exit>
+  50:	3b d1       	rcall	.+630    	; 0x2c8 <main>
+  52:	4f c1       	rjmp	.+670    	; 0x2f2 <_exit>
 
 00000054 <__bad_interrupt>:
   54:	d5 cf       	rjmp	.-86     	; 0x0 <__vectors>
@@ -129,331 +129,467 @@ ISR ( TIMER0_COMPA_vect ){
   8c:	8f 77       	andi	r24, 0x7F	; 127
   8e:	80 83       	st	Z, r24
 	}
-	//TIMER_COMP = IR_T;// * (IR_data[IR_count] >> 1);
+	TIMER_COMP = IR_T * (IR_data[IR_count] >> 1);
+  90:	e0 91 00 01 	lds	r30, 0x0100
+  94:	f0 91 01 01 	lds	r31, 0x0101
+  98:	ee 5f       	subi	r30, 0xFE	; 254
+  9a:	fe 4f       	sbci	r31, 0xFE	; 254
+  9c:	80 81       	ld	r24, Z
+  9e:	86 95       	lsr	r24
+  a0:	96 e4       	ldi	r25, 0x46	; 70
+  a2:	89 9f       	mul	r24, r25
+  a4:	80 2d       	mov	r24, r0
+  a6:	11 24       	eor	r1, r1
+  a8:	87 bd       	out	0x27, r24	; 39
 	//sbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
 	IR_count++;
-  90:	80 91 00 01 	lds	r24, 0x0100
-  94:	90 91 01 01 	lds	r25, 0x0101
-  98:	01 96       	adiw	r24, 0x01	; 1
-  9a:	90 93 01 01 	sts	0x0101, r25
-  9e:	80 93 00 01 	sts	0x0100, r24
+  aa:	80 91 00 01 	lds	r24, 0x0100
+  ae:	90 91 01 01 	lds	r25, 0x0101
+  b2:	01 96       	adiw	r24, 0x01	; 1
+  b4:	90 93 01 01 	sts	0x0101, r25
+  b8:	80 93 00 01 	sts	0x0100, r24
 	if(IR_data[IR_count] == 0) {
-  a2:	e0 91 00 01 	lds	r30, 0x0100
-  a6:	f0 91 01 01 	lds	r31, 0x0101
-  aa:	ee 5f       	subi	r30, 0xFE	; 254
-  ac:	fe 4f       	sbci	r31, 0xFE	; 254
-  ae:	80 81       	ld	r24, Z
-  b0:	81 11       	cpse	r24, r1
-  b2:	0f c0       	rjmp	.+30     	; 0xd2 <__vector_14+0x7c>
+  bc:	e0 91 00 01 	lds	r30, 0x0100
+  c0:	f0 91 01 01 	lds	r31, 0x0101
+  c4:	ee 5f       	subi	r30, 0xFE	; 254
+  c6:	fe 4f       	sbci	r31, 0xFE	; 254
+  c8:	80 81       	ld	r24, Z
+  ca:	81 11       	cpse	r24, r1
+  cc:	0f c0       	rjmp	.+30     	; 0xec <__vector_14+0x96>
 		//tbi(PORTD,PD7);
 		cbi(PWM_CONTROL_A,7);
-  b4:	e0 e8       	ldi	r30, 0x80	; 128
-  b6:	f0 e0       	ldi	r31, 0x00	; 0
-  b8:	80 81       	ld	r24, Z
-  ba:	8f 77       	andi	r24, 0x7F	; 127
-  bc:	80 83       	st	Z, r24
+  ce:	e0 e8       	ldi	r30, 0x80	; 128
+  d0:	f0 e0       	ldi	r31, 0x00	; 0
+  d2:	80 81       	ld	r24, Z
+  d4:	8f 77       	andi	r24, 0x7F	; 127
+  d6:	80 83       	st	Z, r24
 		cbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
-  be:	ee e6       	ldi	r30, 0x6E	; 110
-  c0:	f0 e0       	ldi	r31, 0x00	; 0
-  c2:	80 81       	ld	r24, Z
-  c4:	8d 7f       	andi	r24, 0xFD	; 253
-  c6:	80 83       	st	Z, r24
+  d8:	ee e6       	ldi	r30, 0x6E	; 110
+  da:	f0 e0       	ldi	r31, 0x00	; 0
+  dc:	80 81       	ld	r24, Z
+  de:	8d 7f       	andi	r24, 0xFD	; 253
+  e0:	80 83       	st	Z, r24
 		IR_count = 0;
-  c8:	10 92 01 01 	sts	0x0101, r1
-  cc:	10 92 00 01 	sts	0x0100, r1
+  e2:	10 92 01 01 	sts	0x0101, r1
+  e6:	10 92 00 01 	sts	0x0100, r1
 		cbi(IR_LED_PORT,IR_LED_PIN);
-  d0:	29 98       	cbi	0x05, 1	; 5
+  ea:	29 98       	cbi	0x05, 1	; 5
 	}
 }
-  d2:	ff 91       	pop	r31
-  d4:	ef 91       	pop	r30
-  d6:	9f 91       	pop	r25
-  d8:	8f 91       	pop	r24
-  da:	0f 90       	pop	r0
-  dc:	0f be       	out	0x3f, r0	; 63
-  de:	0f 90       	pop	r0
-  e0:	1f 90       	pop	r1
-  e2:	18 95       	reti
+  ec:	ff 91       	pop	r31
+  ee:	ef 91       	pop	r30
+  f0:	9f 91       	pop	r25
+  f2:	8f 91       	pop	r24
+  f4:	0f 90       	pop	r0
+  f6:	0f be       	out	0x3f, r0	; 63
+  f8:	0f 90       	pop	r0
+  fa:	1f 90       	pop	r1
+  fc:	18 95       	reti
 
-000000e4 <IR_initialize>:
+000000fe <IR_initialize>:
 
 void IR_initialize(){
 	TIMER_CONTROL_A = 0b00000010;//OC0A切断 CTC
-  e4:	82 e0       	ldi	r24, 0x02	; 2
-  e6:	84 bd       	out	0x24, r24	; 36
+  fe:	82 e0       	ldi	r24, 0x02	; 2
+ 100:	84 bd       	out	0x24, r24	; 36
 	TIMER_CONTROL_B = 0b00000010;//1/8 8μs/1カウント
-  e8:	85 bd       	out	0x25, r24	; 37
+ 102:	85 bd       	out	0x25, r24	; 37
 	TIMER_COMP = IR_T;
-  ea:	96 e4       	ldi	r25, 0x46	; 70
-  ec:	97 bd       	out	0x27, r25	; 39
+ 104:	96 e4       	ldi	r25, 0x46	; 70
+ 106:	97 bd       	out	0x27, r25	; 39
 	
 	sbi(IR_LED_DDR,IR_LED_PIN);//output
-  ee:	21 9a       	sbi	0x04, 1	; 4
+ 108:	21 9a       	sbi	0x04, 1	; 4
 	cbi(IR_LED_PORT,IR_LED_PIN);
-  f0:	29 98       	cbi	0x05, 1	; 5
+ 10a:	29 98       	cbi	0x05, 1	; 5
 	
 	PWM_CONTROL_A = 0b00000010;
-  f2:	80 93 80 00 	sts	0x0080, r24
+ 10c:	80 93 80 00 	sts	0x0080, r24
 	PWM_CONTROL_B = 0b00011001;
-  f6:	89 e1       	ldi	r24, 0x19	; 25
-  f8:	80 93 81 00 	sts	0x0081, r24
+ 110:	89 e1       	ldi	r24, 0x19	; 25
+ 112:	80 93 81 00 	sts	0x0081, r24
 	PWM_TOP = IR_CAREER;
-  fc:	8a e1       	ldi	r24, 0x1A	; 26
-  fe:	90 e0       	ldi	r25, 0x00	; 0
- 100:	90 93 87 00 	sts	0x0087, r25
- 104:	80 93 86 00 	sts	0x0086, r24
+ 116:	8a e1       	ldi	r24, 0x1A	; 26
+ 118:	90 e0       	ldi	r25, 0x00	; 0
+ 11a:	90 93 87 00 	sts	0x0087, r25
+ 11e:	80 93 86 00 	sts	0x0086, r24
 	PWM_COMP = IR_DUTY;
- 108:	89 e0       	ldi	r24, 0x09	; 9
- 10a:	80 93 88 00 	sts	0x0088, r24
- 10e:	08 95       	ret
+ 122:	89 e0       	ldi	r24, 0x09	; 9
+ 124:	80 93 88 00 	sts	0x0088, r24
+ 128:	08 95       	ret
 
-00000110 <add_data_raw>:
+0000012a <add_data_raw>:
 //IR_data一個の構造
 //0ビット目でHIGHかLOWか
 //残り7ビットでその状態の長さを表す
 //ex) 0b00000100 LOWの状態を2カウント続ける　0b00000011 HIGHの状態を1カウント続ける
 
-int add_data_raw(char mvalue,int count,char length){
- 110:	86 2f       	mov	r24, r22
- 112:	97 2f       	mov	r25, r23
+int add_data_raw(char mvalue,int *count,char length){
+ 12a:	fb 01       	movw	r30, r22
+	char lengthnumber; char rest;//8ビットカウンタ　1MHz 1/8分周より　2048μsまでしか測れない
+	if(length > 3){ lengthnumber = length / 3; rest = length % 3 ;}
+ 12c:	44 30       	cpi	r20, 0x04	; 4
+ 12e:	68 f0       	brcs	.+26     	; 0x14a <add_data_raw+0x20>
+ 130:	5b ea       	ldi	r21, 0xAB	; 171
+ 132:	45 9f       	mul	r20, r21
+ 134:	51 2d       	mov	r21, r1
+ 136:	11 24       	eor	r1, r1
+ 138:	56 95       	lsr	r21
+ 13a:	95 2f       	mov	r25, r21
+ 13c:	99 0f       	add	r25, r25
+ 13e:	95 0f       	add	r25, r21
+ 140:	49 1b       	sub	r20, r25
+	else if(length == 0) return *count;
+	else {lengthnumber = 0; rest = length;}
+		
 	mvalue &= 0b00000001;//2以上の場合は1に
-	if(!length){cbi(PORTD,PD7); return count;}else sbi(PORTD,PD7);
- 114:	41 11       	cpse	r20, r1
- 116:	02 c0       	rjmp	.+4      	; 0x11c <add_data_raw+0xc>
- 118:	5f 98       	cbi	0x0b, 7	; 11
- 11a:	08 95       	ret
- 11c:	5f 9a       	sbi	0x0b, 7	; 11
-	IR_data[0] = 5;//(length << 1) | mvalue;
- 11e:	25 e0       	ldi	r18, 0x05	; 5
- 120:	20 93 02 01 	sts	0x0102, r18
-	return count++;
+ 142:	81 70       	andi	r24, 0x01	; 1
+	for (char i=0;i < lengthnumber;i++){
+ 144:	51 11       	cpse	r21, r1
+ 146:	06 c0       	rjmp	.+12     	; 0x154 <add_data_raw+0x2a>
+ 148:	16 c0       	rjmp	.+44     	; 0x176 <add_data_raw+0x4c>
+//ex) 0b00000100 LOWの状態を2カウント続ける　0b00000011 HIGHの状態を1カウント続ける
+
+int add_data_raw(char mvalue,int *count,char length){
+	char lengthnumber; char rest;//8ビットカウンタ　1MHz 1/8分周より　2048μsまでしか測れない
+	if(length > 3){ lengthnumber = length / 3; rest = length % 3 ;}
+	else if(length == 0) return *count;
+ 14a:	41 11       	cpse	r20, r1
+ 14c:	23 c0       	rjmp	.+70     	; 0x194 <add_data_raw+0x6a>
+ 14e:	20 81       	ld	r18, Z
+ 150:	31 81       	ldd	r19, Z+1	; 0x01
+ 152:	1d c0       	rjmp	.+58     	; 0x18e <add_data_raw+0x64>
+	else {lengthnumber = 0; rest = length;}
+		
+	mvalue &= 0b00000001;//2以上の場合は1に
+	for (char i=0;i < lengthnumber;i++){
+ 154:	90 e0       	ldi	r25, 0x00	; 0
+		IR_data[*count] = (3 << 1) | mvalue;
+ 156:	68 2f       	mov	r22, r24
+ 158:	66 60       	ori	r22, 0x06	; 6
+ 15a:	a0 81       	ld	r26, Z
+ 15c:	b1 81       	ldd	r27, Z+1	; 0x01
+ 15e:	ae 5f       	subi	r26, 0xFE	; 254
+ 160:	be 4f       	sbci	r27, 0xFE	; 254
+ 162:	6c 93       	st	X, r22
+		(*count)++;
+ 164:	20 81       	ld	r18, Z
+ 166:	31 81       	ldd	r19, Z+1	; 0x01
+ 168:	2f 5f       	subi	r18, 0xFF	; 255
+ 16a:	3f 4f       	sbci	r19, 0xFF	; 255
+ 16c:	31 83       	std	Z+1, r19	; 0x01
+ 16e:	20 83       	st	Z, r18
+	if(length > 3){ lengthnumber = length / 3; rest = length % 3 ;}
+	else if(length == 0) return *count;
+	else {lengthnumber = 0; rest = length;}
+		
+	mvalue &= 0b00000001;//2以上の場合は1に
+	for (char i=0;i < lengthnumber;i++){
+ 170:	9f 5f       	subi	r25, 0xFF	; 255
+ 172:	95 13       	cpse	r25, r21
+ 174:	f2 cf       	rjmp	.-28     	; 0x15a <add_data_raw+0x30>
+		IR_data[*count] = (3 << 1) | mvalue;
+		(*count)++;
+	}
+	IR_data[(*count)++] = (rest << 1) | mvalue;
+ 176:	20 81       	ld	r18, Z
+ 178:	31 81       	ldd	r19, Z+1	; 0x01
+ 17a:	44 0f       	add	r20, r20
+ 17c:	84 2b       	or	r24, r20
+ 17e:	d9 01       	movw	r26, r18
+ 180:	ae 5f       	subi	r26, 0xFE	; 254
+ 182:	be 4f       	sbci	r27, 0xFE	; 254
+ 184:	8c 93       	st	X, r24
+ 186:	2f 5f       	subi	r18, 0xFF	; 255
+ 188:	3f 4f       	sbci	r19, 0xFF	; 255
+ 18a:	31 83       	std	Z+1, r19	; 0x01
+ 18c:	20 83       	st	Z, r18
+ 18e:	82 2f       	mov	r24, r18
+ 190:	93 2f       	mov	r25, r19
+ 192:	08 95       	ret
+	char lengthnumber; char rest;//8ビットカウンタ　1MHz 1/8分周より　2048μsまでしか測れない
+	if(length > 3){ lengthnumber = length / 3; rest = length % 3 ;}
+	else if(length == 0) return *count;
+	else {lengthnumber = 0; rest = length;}
+		
+	mvalue &= 0b00000001;//2以上の場合は1に
+ 194:	81 70       	andi	r24, 0x01	; 1
+ 196:	ef cf       	rjmp	.-34     	; 0x176 <add_data_raw+0x4c>
+
+00000198 <add_data>:
+	}
+	IR_data[(*count)++] = (rest << 1) | mvalue;
+	return *count;
 }
- 124:	08 95       	ret
 
-00000126 <add_data>:
-
-int add_data(char mvalue,int count){
+int add_data(char mvalue,int *count){
+ 198:	cf 93       	push	r28
+ 19a:	df 93       	push	r29
+ 19c:	eb 01       	movw	r28, r22
 	if(mvalue){
- 126:	88 23       	and	r24, r24
- 128:	41 f0       	breq	.+16     	; 0x13a <add_data+0x14>
-		count = add_data_raw(1,count,1);
- 12a:	41 e0       	ldi	r20, 0x01	; 1
- 12c:	81 e0       	ldi	r24, 0x01	; 1
- 12e:	f0 df       	rcall	.-32     	; 0x110 <add_data_raw>
-		count = add_data_raw(0,count,3);
- 130:	43 e0       	ldi	r20, 0x03	; 3
- 132:	bc 01       	movw	r22, r24
- 134:	80 e0       	ldi	r24, 0x00	; 0
- 136:	ec df       	rcall	.-40     	; 0x110 <add_data_raw>
- 138:	08 95       	ret
+ 19e:	88 23       	and	r24, r24
+ 1a0:	41 f0       	breq	.+16     	; 0x1b2 <add_data+0x1a>
+		add_data_raw(1,count,1);
+ 1a2:	41 e0       	ldi	r20, 0x01	; 1
+ 1a4:	81 e0       	ldi	r24, 0x01	; 1
+ 1a6:	c1 df       	rcall	.-126    	; 0x12a <add_data_raw>
+		add_data_raw(0,count,3);
+ 1a8:	43 e0       	ldi	r20, 0x03	; 3
+ 1aa:	be 01       	movw	r22, r28
+ 1ac:	80 e0       	ldi	r24, 0x00	; 0
+ 1ae:	bd df       	rcall	.-134    	; 0x12a <add_data_raw>
+ 1b0:	07 c0       	rjmp	.+14     	; 0x1c0 <add_data+0x28>
 	}
 	else{
-		count = add_data_raw(1,count,1);
- 13a:	41 e0       	ldi	r20, 0x01	; 1
- 13c:	81 e0       	ldi	r24, 0x01	; 1
- 13e:	e8 df       	rcall	.-48     	; 0x110 <add_data_raw>
-		count = add_data_raw(0,count,1);
- 140:	41 e0       	ldi	r20, 0x01	; 1
- 142:	bc 01       	movw	r22, r24
- 144:	80 e0       	ldi	r24, 0x00	; 0
- 146:	e4 df       	rcall	.-56     	; 0x110 <add_data_raw>
+		add_data_raw(1,count,1);
+ 1b2:	41 e0       	ldi	r20, 0x01	; 1
+ 1b4:	81 e0       	ldi	r24, 0x01	; 1
+ 1b6:	b9 df       	rcall	.-142    	; 0x12a <add_data_raw>
+		add_data_raw(0,count,1);
+ 1b8:	41 e0       	ldi	r20, 0x01	; 1
+ 1ba:	be 01       	movw	r22, r28
+ 1bc:	80 e0       	ldi	r24, 0x00	; 0
+ 1be:	b5 df       	rcall	.-150    	; 0x12a <add_data_raw>
 	}
-	return count;
+	return *count;
 }
- 148:	08 95       	ret
+ 1c0:	88 81       	ld	r24, Y
+ 1c2:	99 81       	ldd	r25, Y+1	; 0x01
+ 1c4:	df 91       	pop	r29
+ 1c6:	cf 91       	pop	r28
+ 1c8:	08 95       	ret
 
-0000014a <IR_send>:
+000001ca <IR_send>:
 
 void IR_send(int customer,char data){
- 14a:	ef 92       	push	r14
- 14c:	ff 92       	push	r15
- 14e:	0f 93       	push	r16
- 150:	1f 93       	push	r17
- 152:	cf 93       	push	r28
- 154:	df 93       	push	r29
- 156:	8c 01       	movw	r16, r24
- 158:	f6 2e       	mov	r15, r22
+ 1ca:	cf 92       	push	r12
+ 1cc:	df 92       	push	r13
+ 1ce:	ef 92       	push	r14
+ 1d0:	ff 92       	push	r15
+ 1d2:	0f 93       	push	r16
+ 1d4:	1f 93       	push	r17
+ 1d6:	cf 93       	push	r28
+ 1d8:	df 93       	push	r29
+ 1da:	00 d0       	rcall	.+0      	; 0x1dc <IR_send+0x12>
+ 1dc:	cd b7       	in	r28, 0x3d	; 61
+ 1de:	de b7       	in	r29, 0x3e	; 62
+ 1e0:	7c 01       	movw	r14, r24
+ 1e2:	d6 2e       	mov	r13, r22
 
 	int count = 0;
-	count = add_data_raw(1,count,16);
- 15a:	40 e1       	ldi	r20, 0x10	; 16
- 15c:	60 e0       	ldi	r22, 0x00	; 0
- 15e:	70 e0       	ldi	r23, 0x00	; 0
- 160:	81 e0       	ldi	r24, 0x01	; 1
- 162:	d6 df       	rcall	.-84     	; 0x110 <add_data_raw>
-	count = add_data_raw(0,count,8);
- 164:	48 e0       	ldi	r20, 0x08	; 8
- 166:	bc 01       	movw	r22, r24
- 168:	80 e0       	ldi	r24, 0x00	; 0
- 16a:	d2 df       	rcall	.-92     	; 0x110 <add_data_raw>
- 16c:	bc 01       	movw	r22, r24
- 16e:	cf e0       	ldi	r28, 0x0F	; 15
- 170:	d0 e0       	ldi	r29, 0x00	; 0
+ 1e4:	1a 82       	std	Y+2, r1	; 0x02
+ 1e6:	19 82       	std	Y+1, r1	; 0x01
+	add_data_raw(1,&count,16);
+ 1e8:	40 e1       	ldi	r20, 0x10	; 16
+ 1ea:	be 01       	movw	r22, r28
+ 1ec:	6f 5f       	subi	r22, 0xFF	; 255
+ 1ee:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1f0:	81 e0       	ldi	r24, 0x01	; 1
+ 1f2:	9b df       	rcall	.-202    	; 0x12a <add_data_raw>
+	add_data_raw(0,&count,8);
+ 1f4:	48 e0       	ldi	r20, 0x08	; 8
+ 1f6:	be 01       	movw	r22, r28
+ 1f8:	6f 5f       	subi	r22, 0xFF	; 255
+ 1fa:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1fc:	80 e0       	ldi	r24, 0x00	; 0
+ 1fe:	95 df       	rcall	.-214    	; 0x12a <add_data_raw>
+ 200:	0f e0       	ldi	r16, 0x0F	; 15
+ 202:	10 e0       	ldi	r17, 0x00	; 0
 	
 	for(char i=0;i < 16;i++){
-		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
- 172:	c8 01       	movw	r24, r16
- 174:	0c 2e       	mov	r0, r28
- 176:	02 c0       	rjmp	.+4      	; 0x17c <IR_send+0x32>
- 178:	95 95       	asr	r25
- 17a:	87 95       	ror	r24
- 17c:	0a 94       	dec	r0
- 17e:	e2 f7       	brpl	.-8      	; 0x178 <IR_send+0x2e>
- 180:	81 70       	andi	r24, 0x01	; 1
- 182:	d1 df       	rcall	.-94     	; 0x126 <add_data>
- 184:	bc 01       	movw	r22, r24
- 186:	21 97       	sbiw	r28, 0x01	; 1
- 188:	a0 f7       	brcc	.-24     	; 0x172 <IR_send+0x28>
+		add_data(((customer >> (15 - i)) & 0x0001),&count);//カスタマーコード　上位ビットからiビット目が1の時
+ 204:	c7 01       	movw	r24, r14
+ 206:	00 2e       	mov	r0, r16
+ 208:	02 c0       	rjmp	.+4      	; 0x20e <IR_send+0x44>
+ 20a:	95 95       	asr	r25
+ 20c:	87 95       	ror	r24
+ 20e:	0a 94       	dec	r0
+ 210:	e2 f7       	brpl	.-8      	; 0x20a <IR_send+0x40>
+ 212:	be 01       	movw	r22, r28
+ 214:	6f 5f       	subi	r22, 0xFF	; 255
+ 216:	7f 4f       	sbci	r23, 0xFF	; 255
+ 218:	81 70       	andi	r24, 0x01	; 1
+ 21a:	be df       	rcall	.-132    	; 0x198 <add_data>
+ 21c:	01 50       	subi	r16, 0x01	; 1
+ 21e:	11 09       	sbc	r17, r1
+ 220:	88 f7       	brcc	.-30     	; 0x204 <IR_send+0x3a>
 
 	int count = 0;
-	count = add_data_raw(1,count,16);
-	count = add_data_raw(0,count,8);
+	add_data_raw(1,&count,16);
+	add_data_raw(0,&count,8);
 	
 	for(char i=0;i < 16;i++){
- 18a:	c7 e0       	ldi	r28, 0x07	; 7
- 18c:	d0 e0       	ldi	r29, 0x00	; 0
-		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+ 222:	07 e0       	ldi	r16, 0x07	; 7
+ 224:	10 e0       	ldi	r17, 0x00	; 0
+		add_data(((customer >> (15 - i)) & 0x0001),&count);//カスタマーコード　上位ビットからiビット目が1の時
 	}
 	for(char i=0;i < 8;i++){
-		count = add_data(((data >> (7 - i)) & 0x01),count);
- 18e:	0f 2d       	mov	r16, r15
- 190:	10 e0       	ldi	r17, 0x00	; 0
- 192:	78 01       	movw	r14, r16
- 194:	c8 01       	movw	r24, r16
- 196:	0c 2e       	mov	r0, r28
- 198:	02 c0       	rjmp	.+4      	; 0x19e <IR_send+0x54>
- 19a:	95 95       	asr	r25
- 19c:	87 95       	ror	r24
- 19e:	0a 94       	dec	r0
- 1a0:	e2 f7       	brpl	.-8      	; 0x19a <IR_send+0x50>
- 1a2:	81 70       	andi	r24, 0x01	; 1
- 1a4:	c0 df       	rcall	.-128    	; 0x126 <add_data>
- 1a6:	bc 01       	movw	r22, r24
- 1a8:	21 97       	sbiw	r28, 0x01	; 1
- 1aa:	98 f7       	brcc	.-26     	; 0x192 <IR_send+0x48>
-	count = add_data_raw(0,count,8);
+		add_data(((data >> (7 - i)) & 0x01),&count);
+ 226:	ed 2c       	mov	r14, r13
+ 228:	f1 2c       	mov	r15, r1
+ 22a:	c7 01       	movw	r24, r14
+ 22c:	00 2e       	mov	r0, r16
+ 22e:	02 c0       	rjmp	.+4      	; 0x234 <IR_send+0x6a>
+ 230:	95 95       	asr	r25
+ 232:	87 95       	ror	r24
+ 234:	0a 94       	dec	r0
+ 236:	e2 f7       	brpl	.-8      	; 0x230 <IR_send+0x66>
+ 238:	be 01       	movw	r22, r28
+ 23a:	6f 5f       	subi	r22, 0xFF	; 255
+ 23c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 23e:	81 70       	andi	r24, 0x01	; 1
+ 240:	ab df       	rcall	.-170    	; 0x198 <add_data>
+ 242:	01 50       	subi	r16, 0x01	; 1
+ 244:	11 09       	sbc	r17, r1
+ 246:	88 f7       	brcc	.-30     	; 0x22a <IR_send+0x60>
+	add_data_raw(0,&count,8);
 	
 	for(char i=0;i < 16;i++){
-		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+		add_data(((customer >> (15 - i)) & 0x0001),&count);//カスタマーコード　上位ビットからiビット目が1の時
 	}
 	for(char i=0;i < 8;i++){
- 1ac:	c7 e0       	ldi	r28, 0x07	; 7
- 1ae:	d0 e0       	ldi	r29, 0x00	; 0
+ 248:	07 e0       	ldi	r16, 0x07	; 7
+ 24a:	10 e0       	ldi	r17, 0x00	; 0
 			IR_data[count] = 1;count++;
 			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
 		}*/
 	}
 	for(char i=0;i < 8;i++){
-		count = add_data(((~data >> (7 - i)) & 0x01),count);
- 1b0:	e0 94       	com	r14
- 1b2:	f0 94       	com	r15
- 1b4:	c7 01       	movw	r24, r14
- 1b6:	0c 2e       	mov	r0, r28
- 1b8:	02 c0       	rjmp	.+4      	; 0x1be <IR_send+0x74>
- 1ba:	95 95       	asr	r25
- 1bc:	87 95       	ror	r24
- 1be:	0a 94       	dec	r0
- 1c0:	e2 f7       	brpl	.-8      	; 0x1ba <IR_send+0x70>
- 1c2:	81 70       	andi	r24, 0x01	; 1
- 1c4:	b0 df       	rcall	.-160    	; 0x126 <add_data>
- 1c6:	bc 01       	movw	r22, r24
- 1c8:	21 97       	sbiw	r28, 0x01	; 1
- 1ca:	a0 f7       	brcc	.-24     	; 0x1b4 <IR_send+0x6a>
-		else{
+		add_data(((~data >> (7 - i)) & 0x01),&count);
+ 24c:	e0 94       	com	r14
+ 24e:	f0 94       	com	r15
+ 250:	c7 01       	movw	r24, r14
+ 252:	00 2e       	mov	r0, r16
+ 254:	02 c0       	rjmp	.+4      	; 0x25a <IR_send+0x90>
+ 256:	95 95       	asr	r25
+ 258:	87 95       	ror	r24
+ 25a:	0a 94       	dec	r0
+ 25c:	e2 f7       	brpl	.-8      	; 0x256 <IR_send+0x8c>
+ 25e:	be 01       	movw	r22, r28
+ 260:	6f 5f       	subi	r22, 0xFF	; 255
+ 262:	7f 4f       	sbci	r23, 0xFF	; 255
+ 264:	81 70       	andi	r24, 0x01	; 1
+ 266:	98 df       	rcall	.-208    	; 0x198 <add_data>
+ 268:	01 50       	subi	r16, 0x01	; 1
+ 26a:	11 09       	sbc	r17, r1
+ 26c:	88 f7       	brcc	.-30     	; 0x250 <IR_send+0x86>
 			IR_data[count] = 1;count++;
 			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
 		}*/
 	}
-	count = add_data_raw(1,count,1);
- 1cc:	41 e0       	ldi	r20, 0x01	; 1
- 1ce:	81 e0       	ldi	r24, 0x01	; 1
- 1d0:	9f df       	rcall	.-194    	; 0x110 <add_data_raw>
+	//add_data(1,&count);
+	add_data_raw(1,&count,1);
+ 26e:	41 e0       	ldi	r20, 0x01	; 1
+ 270:	be 01       	movw	r22, r28
+ 272:	6f 5f       	subi	r22, 0xFF	; 255
+ 274:	7f 4f       	sbci	r23, 0xFF	; 255
+ 276:	81 e0       	ldi	r24, 0x01	; 1
+ 278:	58 df       	rcall	.-336    	; 0x12a <add_data_raw>
+	add_data_raw(0,&count,1);
+ 27a:	41 e0       	ldi	r20, 0x01	; 1
+ 27c:	be 01       	movw	r22, r28
+ 27e:	6f 5f       	subi	r22, 0xFF	; 255
+ 280:	7f 4f       	sbci	r23, 0xFF	; 255
+ 282:	80 e0       	ldi	r24, 0x00	; 0
+ 284:	52 df       	rcall	.-348    	; 0x12a <add_data_raw>
+	
+	//if(IR_data[0] == 0) sbi(PORTD,PD7);else cbi(PORTD,PD7);
 	
 	while(count < 154){
- 1d2:	8a 39       	cpi	r24, 0x9A	; 154
- 1d4:	91 05       	cpc	r25, r1
- 1d6:	44 f4       	brge	.+16     	; 0x1e8 <IR_send+0x9e>
-		IR_data[count++] = 0;
- 1d8:	fc 01       	movw	r30, r24
- 1da:	ee 5f       	subi	r30, 0xFE	; 254
- 1dc:	fe 4f       	sbci	r31, 0xFE	; 254
- 1de:	10 82       	st	Z, r1
- 1e0:	01 96       	adiw	r24, 0x01	; 1
-			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
-		}*/
-	}
-	count = add_data_raw(1,count,1);
+ 286:	89 81       	ldd	r24, Y+1	; 0x01
+ 288:	9a 81       	ldd	r25, Y+2	; 0x02
+ 28a:	8a 39       	cpi	r24, 0x9A	; 154
+ 28c:	91 05       	cpc	r25, r1
+ 28e:	64 f4       	brge	.+24     	; 0x2a8 <IR_send+0xde>
+		IR_data[(count)++] = 0;
+ 290:	fc 01       	movw	r30, r24
+ 292:	ee 5f       	subi	r30, 0xFE	; 254
+ 294:	fe 4f       	sbci	r31, 0xFE	; 254
+ 296:	10 82       	st	Z, r1
+ 298:	01 96       	adiw	r24, 0x01	; 1
+	add_data_raw(1,&count,1);
+	add_data_raw(0,&count,1);
+	
+	//if(IR_data[0] == 0) sbi(PORTD,PD7);else cbi(PORTD,PD7);
 	
 	while(count < 154){
- 1e2:	8a 39       	cpi	r24, 0x9A	; 154
- 1e4:	91 05       	cpc	r25, r1
- 1e6:	c1 f7       	brne	.-16     	; 0x1d8 <IR_send+0x8e>
+ 29a:	8a 39       	cpi	r24, 0x9A	; 154
+ 29c:	91 05       	cpc	r25, r1
+ 29e:	c1 f7       	brne	.-16     	; 0x290 <IR_send+0xc6>
+ 2a0:	8a e9       	ldi	r24, 0x9A	; 154
+ 2a2:	90 e0       	ldi	r25, 0x00	; 0
+ 2a4:	9a 83       	std	Y+2, r25	; 0x02
+ 2a6:	89 83       	std	Y+1, r24	; 0x01
 	
 
 	
 	
 	//sbi(PORTD,PD6);
 	sbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
- 1e8:	ee e6       	ldi	r30, 0x6E	; 110
- 1ea:	f0 e0       	ldi	r31, 0x00	; 0
- 1ec:	80 81       	ld	r24, Z
- 1ee:	82 60       	ori	r24, 0x02	; 2
- 1f0:	80 83       	st	Z, r24
+ 2a8:	ee e6       	ldi	r30, 0x6E	; 110
+ 2aa:	f0 e0       	ldi	r31, 0x00	; 0
+ 2ac:	80 81       	ld	r24, Z
+ 2ae:	82 60       	ori	r24, 0x02	; 2
+ 2b0:	80 83       	st	Z, r24
 }
- 1f2:	df 91       	pop	r29
- 1f4:	cf 91       	pop	r28
- 1f6:	1f 91       	pop	r17
- 1f8:	0f 91       	pop	r16
- 1fa:	ff 90       	pop	r15
- 1fc:	ef 90       	pop	r14
- 1fe:	08 95       	ret
+ 2b2:	0f 90       	pop	r0
+ 2b4:	0f 90       	pop	r0
+ 2b6:	df 91       	pop	r29
+ 2b8:	cf 91       	pop	r28
+ 2ba:	1f 91       	pop	r17
+ 2bc:	0f 91       	pop	r16
+ 2be:	ff 90       	pop	r15
+ 2c0:	ef 90       	pop	r14
+ 2c2:	df 90       	pop	r13
+ 2c4:	cf 90       	pop	r12
+ 2c6:	08 95       	ret
 
-00000200 <main>:
+000002c8 <main>:
 #define tbi(addr,bit)	  addr ^=  (1<<bit)
 #define wait(ms) _delay_ms(ms)
 
 int main(void)
 {
 	DDRD = 0b11111111;
- 200:	8f ef       	ldi	r24, 0xFF	; 255
- 202:	8a b9       	out	0x0a, r24	; 10
+ 2c8:	8f ef       	ldi	r24, 0xFF	; 255
+ 2ca:	8a b9       	out	0x0a, r24	; 10
 	PORTD = 0b00000000;
- 204:	1b b8       	out	0x0b, r1	; 11
+ 2cc:	1b b8       	out	0x0b, r1	; 11
 	DDRB = 0b11111111;
- 206:	84 b9       	out	0x04, r24	; 4
+ 2ce:	84 b9       	out	0x04, r24	; 4
 	PORTB = 0b00000000;
- 208:	15 b8       	out	0x05, r1	; 5
+ 2d0:	15 b8       	out	0x05, r1	; 5
 	IR_initialize();
- 20a:	6c df       	rcall	.-296    	; 0xe4 <IR_initialize>
+ 2d2:	15 df       	rcall	.-470    	; 0xfe <IR_initialize>
 	sei();
- 20c:	78 94       	sei
+ 2d4:	78 94       	sei
     while(1)
     {
 		//sbi(PWM_CONTROL_B,0);
 		IR_send(0b0010000111000111,0b10010100);
- 20e:	64 e9       	ldi	r22, 0x94	; 148
- 210:	87 ec       	ldi	r24, 0xC7	; 199
- 212:	91 e2       	ldi	r25, 0x21	; 33
- 214:	9a df       	rcall	.-204    	; 0x14a <IR_send>
+ 2d6:	64 e9       	ldi	r22, 0x94	; 148
+ 2d8:	87 ec       	ldi	r24, 0xC7	; 199
+ 2da:	91 e2       	ldi	r25, 0x21	; 33
+ 2dc:	76 df       	rcall	.-276    	; 0x1ca <IR_send>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 216:	2f e3       	ldi	r18, 0x3F	; 63
- 218:	82 e4       	ldi	r24, 0x42	; 66
- 21a:	9f e0       	ldi	r25, 0x0F	; 15
- 21c:	21 50       	subi	r18, 0x01	; 1
- 21e:	80 40       	sbci	r24, 0x00	; 0
- 220:	90 40       	sbci	r25, 0x00	; 0
- 222:	e1 f7       	brne	.-8      	; 0x21c <main+0x1c>
- 224:	00 c0       	rjmp	.+0      	; 0x226 <main+0x26>
- 226:	00 00       	nop
- 228:	f2 cf       	rjmp	.-28     	; 0x20e <main+0xe>
+ 2de:	2f e9       	ldi	r18, 0x9F	; 159
+ 2e0:	86 e8       	ldi	r24, 0x86	; 134
+ 2e2:	91 e0       	ldi	r25, 0x01	; 1
+ 2e4:	21 50       	subi	r18, 0x01	; 1
+ 2e6:	80 40       	sbci	r24, 0x00	; 0
+ 2e8:	90 40       	sbci	r25, 0x00	; 0
+ 2ea:	e1 f7       	brne	.-8      	; 0x2e4 <main+0x1c>
+ 2ec:	00 c0       	rjmp	.+0      	; 0x2ee <main+0x26>
+ 2ee:	00 00       	nop
+ 2f0:	f2 cf       	rjmp	.-28     	; 0x2d6 <main+0xe>
 
-0000022a <_exit>:
- 22a:	f8 94       	cli
+000002f2 <_exit>:
+ 2f2:	f8 94       	cli
 
-0000022c <__stop_program>:
- 22c:	ff cf       	rjmp	.-2      	; 0x22c <__stop_program>
+000002f4 <__stop_program>:
+ 2f4:	ff cf       	rjmp	.-2      	; 0x2f4 <__stop_program>

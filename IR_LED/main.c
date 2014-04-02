@@ -27,6 +27,6 @@ int main(void)
     {
 		//sbi(PWM_CONTROL_B,0);
 		IR_send(0b0010000111000111,0b10010100);
-		wait(5000);
+		wait(500);
     }
 }
