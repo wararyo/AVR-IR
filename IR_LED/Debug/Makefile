@@ -36,7 +36,6 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../IR.c \
 ../main.c
 
 
@@ -47,19 +46,15 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-IR.o \
 main.o
 
 OBJS_AS_ARGS +=  \
-IR.o \
 main.o
 
 C_DEPS +=  \
-IR.d \
 main.d
 
 C_DEPS_AS_ARGS +=  \
-IR.d \
 main.d
 
 OUTPUT_FILE_PATH +=IR_LED.elf
@@ -73,8 +68,6 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
-
-
 
 
 

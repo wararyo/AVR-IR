@@ -22,6 +22,7 @@ int main(void)
 	DDRB = 0b11111111;
 	PORTB = 0b00000000;
 	IR_initialize();
+	sei();
     while(1)
     {
 		//sbi(PWM_CONTROL_B,0);

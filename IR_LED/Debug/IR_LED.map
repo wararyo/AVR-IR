@@ -3,18 +3,16 @@ Archive member included because of file (symbol)
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
                               c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88p.o (exit)
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_clear_bss.o)
-                              IR.o (__do_clear_bss)
+                              main.o (__do_clear_bss)
 
 Allocating common symbols
 Common symbol       size              file
 
-IR_data             0x9a              IR.o
+IR_data             0x9a              main.o
 
 Discarded input sections
 
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88p.o
- .text          0x00000000        0x0 IR.o
- .bss           0x00000000        0x0 IR.o
  .text          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
@@ -60,7 +58,6 @@ Linker script and memory map
 
 Address of section .data set to 0x800100
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88p.o
-LOAD IR.o
 LOAD main.o
 START GROUP
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4\libm.a
@@ -159,7 +156,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x23c
+.text           0x00000000      0x22e
  *(.vectors)
  .vectors       0x00000000       0x34 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88p.o
                 0x00000000                __vector_default
@@ -241,23 +238,26 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                 0x00000056                . = ALIGN (0x2)
  *(.text.*)
  .text.__vector_14
-                0x00000056       0x78 IR.o
+                0x00000056       0x8e main.o
                 0x00000056                __vector_14
  .text.IR_initialize
-                0x000000ce       0x30 IR.o
-                0x000000ce                IR_initialize
+                0x000000e4       0x2c main.o
+                0x000000e4                IR_initialize
+ .text.add_data_raw
+                0x00000110       0x16 main.o
+                0x00000110                add_data_raw
  .text.add_data
-                0x000000fe       0x30 IR.o
-                0x000000fe                add_data
- .text.IR_send  0x0000012e       0xe2 IR.o
-                0x0000012e                IR_send
- .text.main     0x00000210       0x28 main.o
-                0x00000210                main
-                0x00000238                . = ALIGN (0x2)
+                0x00000126       0x24 main.o
+                0x00000126                add_data
+ .text.IR_send  0x0000014a       0xb6 main.o
+                0x0000014a                IR_send
+ .text.main     0x00000200       0x2a main.o
+                0x00000200                main
+                0x0000022a                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000238        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
-                0x00000238                _exit
-                0x00000238                exit
+ .fini9         0x0000022a        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
+                0x0000022a                _exit
+                0x0000022a                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -276,15 +276,14 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000238        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
+ .fini0         0x0000022a        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000023c                _etext = .
+                0x0000022e                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000023c
+.data           0x00800100        0x0 load address 0x0000022e
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88p.o
- .data          0x00800100        0x0 IR.o
  .data          0x00800100        0x0 main.o
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_clear_bss.o)
@@ -300,14 +299,14 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.IR_count  0x00800100        0x2 IR.o
+ .bss.IR_count  0x00800100        0x2 main.o
                 0x00800100                IR_count
  *(COMMON)
- COMMON         0x00800102       0x9a IR.o
+ COMMON         0x00800102       0x9a main.o
                 0x00800102                IR_data
                 0x0080019c                PROVIDE (__bss_end, .)
-                0x0000023c                __data_load_start = LOADADDR (.data)
-                0x0000023c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000022e                __data_load_start = LOADADDR (.data)
+                0x0000022e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080019c        0x0
                 0x0080019c                PROVIDE (__noinit_start, .)
@@ -357,9 +356,8 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 
 .comment        0x00000000       0x2f
  *(.comment)
- .comment       0x00000000       0x2f IR.o
+ .comment       0x00000000       0x2f main.o
                                  0x30 (size before relaxing)
- .comment       0x00000000       0x30 main.o
 
 .debug
  *(.debug)
@@ -373,47 +371,39 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x58
+.debug_aranges  0x00000000       0x48
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x38 IR.o
- .debug_aranges
-                0x00000038       0x20 main.o
+                0x00000000       0x48 main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x3ce
+.debug_info     0x00000000      0x3b8
  *(.debug_info)
- .debug_info    0x00000000      0x210 IR.o
- .debug_info    0x00000210      0x1be main.o
+ .debug_info    0x00000000      0x3b8 main.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x251
+.debug_abbrev   0x00000000      0x1c9
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x122 IR.o
- .debug_abbrev  0x00000122      0x12f main.o
+ .debug_abbrev  0x00000000      0x1c9 main.o
 
-.debug_line     0x00000000      0x2d5
+.debug_line     0x00000000      0x22c
  *(.debug_line)
- .debug_line    0x00000000      0x14d IR.o
- .debug_line    0x0000014d      0x188 main.o
+ .debug_line    0x00000000      0x22c main.o
 
-.debug_frame    0x00000000       0xb8
+.debug_frame    0x00000000       0xb4
  *(.debug_frame)
- .debug_frame   0x00000000       0x94 IR.o
- .debug_frame   0x00000094       0x24 main.o
+ .debug_frame   0x00000000       0xb4 main.o
 
-.debug_str      0x00000000      0x137
+.debug_str      0x00000000      0x141
  *(.debug_str)
- .debug_str     0x00000000       0xd3 IR.o
-                                0x117 (size before relaxing)
- .debug_str     0x000000d3       0x64 main.o
-                                0x141 (size before relaxing)
+ .debug_str     0x00000000      0x141 main.o
+                                0x185 (size before relaxing)
 
-.debug_loc      0x00000000      0x333
+.debug_loc      0x00000000      0x2e7
  *(.debug_loc)
- .debug_loc     0x00000000      0x333 IR.o
+ .debug_loc     0x00000000      0x2e7 main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -421,10 +411,9 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x50
+.debug_ranges   0x00000000       0x38
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x40 IR.o
- .debug_ranges  0x00000040       0x10 main.o
+ .debug_ranges  0x00000000       0x38 main.o
 
 .debug_macro
  *(.debug_macro)
