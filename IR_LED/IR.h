@@ -4,6 +4,8 @@
  * Created: 2014/03/30 22:35:21
  *  Author: wararyo
  */ 
+#ifndef IR_H_
+#define IR_H_
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -12,9 +14,6 @@
 #define cbi(addr,bit)     addr &= ~(1<<bit)
 #define sbi(addr,bit)     addr |=  (1<<bit)
 #define wait(ms) _delay_ms(ms)
-
-#ifndef IR_H_
-#define IR_H_
 
 #define TIMER_CONTROL_A TCCR0A
 #define TIMER_CONTROL_B TCCR0B
@@ -35,10 +34,103 @@
 #define IR_CAREER 26
 #define IR_DUTY 9 // 26/3
 
-int IR_count;
-char IR_data[154];
-void IR_initialize();
-void IR_send(int customer,char data);
+volatile int IR_count = 0;
+volatile char IR_data[154];//16+8+(4*32)+1
+
+ISR ( TIMER0_COMPA_vect ){
+	if(IR_data[IR_count]){
+		sbi(PWM_CONTROL_A,7);
+	}
+	else{
+		cbi(PWM_CONTROL_A,7);
+	}
+	IR_count++;
+	if(IR_count >= 153) {
+		cbi(PWM_CONTROL_A,7);
+		cbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
+		IR_count = 0;
+		cbi(IR_LED_PORT,IR_LED_PIN);
+	}
+}
+
+void IR_initialize(){
+	TIMER_CONTROL_A = 0b00000010;//OC0A切断 CTC
+	TIMER_CONTROL_B = 0b00000010;//1/8 8μs/1カウント
+	TIMER_COMP = IR_T;
+	
+	sbi(IR_LED_DDR,IR_LED_PIN);//output
+	cbi(IR_LED_PORT,IR_LED_PIN);
+	
+	PWM_CONTROL_A = 0b00000010;
+	PWM_CONTROL_B = 0b00011001;
+	PWM_TOP = IR_CAREER;
+	PWM_COMP = IR_DUTY;
+	
+	//sei();
+}
+
+int add_data(char mvalue,int count){
+	if(mvalue){
+		IR_data[count] = 1;count++;
+		for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+	}
+	else{
+		IR_data[count] = 1;count++;
+		IR_data[count] = 0;count++;
+	}
+	return count;
+}
+
+
+void IR_send(int customer,char data){
+
+	int count = 0;
+	for(char i=0;i < 16;i++){
+		IR_data[count] = 1;
+		count++;
+	}
+	for(char i=0;i < 8;i++){
+		IR_data[count] = 0;
+		count++;
+	}
+	
+	for(char i=0;i < 16;i++){
+		count = add_data(((customer >> (15 - i)) & 0x0001),count);//カスタマーコード　上位ビットからiビット目が1の時
+	}
+	for(char i=0;i < 8;i++){
+		count = add_data(((data >> (7 - i)) & 0x01),count);
+		/*if((data >> (7 - i)) & 0x01){
+			IR_data[count] = 1;count++;
+			IR_data[count] = 0;count++;
+		}
+		else{
+			IR_data[count] = 1;count++;
+			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+		}*/
+	}
+	for(char i=0;i < 8;i++){
+		count = add_data(((~data >> (7 - i)) & 0x01),count);
+		/*if((~data >> (7 - i)) & 0x01){
+			IR_data[count] = 1;count++;
+			IR_data[count] = 0;count++;
+		}
+		else{
+			IR_data[count] = 1;count++;
+			for(char ii=0;ii < 3;ii++){IR_data[count] = 0;count++;}
+		}*/
+	}
+	IR_data[count] = 1;
+	count++;
+	
+	while(count < 154){
+		IR_data[count] = 0;
+		count++;
+	}
+	
+				
+	//sbi(PORTD,PD6);
+	sbi(TIMER_INTERRUPT,TIMER_INTERRUPT_BIT);
+}
 
 
 #endif /* IR_H_ */
